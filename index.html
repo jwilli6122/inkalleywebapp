@@ -1333,7 +1333,7 @@ const SAGE_ENDPOINT = 'https://www.promoplace.com/ws/ws.dll/ConnectAPI';
 
 // Cloudflare Worker proxy URL - set this once you deploy the worker
 // e.g. https://sage-proxy.YOUR-SUBDOMAIN.workers.dev
-const SAGE_PROXY = '/api/sage'; // Netlify function proxy — active after deployment
+const SAGE_PROXY = '/.netlify/functions/sage-proxy'; // direct function path — no redirect needed
 
 let sageCurrentPage = 1;
 let sageCurrentQuery = '';
