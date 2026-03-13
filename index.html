@@ -1331,9 +1331,8 @@ const SAGE_LOGIN = 'JacobWilliams';
 const SAGE_KEY   = '467b867cecf0dd6e2aaba25543aeafe9';
 const SAGE_ENDPOINT = 'https://www.promoplace.com/ws/ws.dll/ConnectAPI';
 
-// Cloudflare Worker proxy URL - set this once you deploy the worker
-// e.g. https://sage-proxy.YOUR-SUBDOMAIN.workers.dev
-const SAGE_PROXY = '/.netlify/functions/sage-proxy'; // direct function path — no redirect needed
+// CORS proxy — routes browser requests through corsproxy.io to bypass CORS restriction
+const SAGE_PROXY = 'https://corsproxy.io/?https://www.promoplace.com/ws/ws.dll/ConnectAPI';
 
 let sageCurrentPage = 1;
 let sageCurrentQuery = '';
@@ -1364,10 +1363,11 @@ async function loadMoreSage() {
 async function fetchSageProducts(query, page, replace) {
   const pageSize = 24;
 
-  // SAGE Connect Service 103 - Product Search payload
-  // Auth is injected by the Netlify proxy function — not sent from browser
   const startNum = ((page - 1) * pageSize) + 1;
   const payload = {
+    acctId:  SAGE_ACCT,
+    loginId: SAGE_LOGIN,
+    key:     SAGE_KEY,
     serviceId: 103,
     apiVer: 130,
     search: {
@@ -1379,7 +1379,6 @@ async function fetchSageProducts(query, page, replace) {
     }
   };
 
-  // Use proxy if configured, otherwise try direct (will CORS-fail from browser as expected)
   const targetUrl = SAGE_PROXY || SAGE_ENDPOINT;
 
   try {
